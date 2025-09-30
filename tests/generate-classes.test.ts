@@ -199,7 +199,8 @@ describe('generate-classes-utils', () => {
       expect(allResult).toContain('2xl:text-2xl')
     })
 
-    it('should handle conditional classes with object syntax', () => {
+    it('should include ALL conditional classes regardless of boolean value', () => {
+      // At build time, we want ALL possible classes included
       const conditional = [
         `tc({
           base: {
@@ -215,8 +216,8 @@ describe('generate-classes-utils', () => {
       const result = generateClassString(conditional)
       expect(result).toContain('px-4')
       expect(result).toContain('bg-blue-500')
-      expect(result).not.toContain('bg-gray-500')
-      expect(result).not.toContain('hidden')
+      expect(result).toContain('bg-gray-500')
+      expect(result).toContain('hidden')
 
       const mixed = [
         `tc({
@@ -233,7 +234,7 @@ describe('generate-classes-utils', () => {
       const mixedResult = generateClassString(mixed)
       expect(mixedResult).toContain('px-4')
       expect(mixedResult).toContain('bg-blue-500')
-      expect(mixedResult).not.toContain('bg-gray-500')
+      expect(mixedResult).toContain('bg-gray-500')
       expect(mixedResult).toContain('hover:opacity-90')
 
       const inPseudo = [
@@ -254,10 +255,35 @@ describe('generate-classes-utils', () => {
       ]
       const pseudoResult = generateClassString(inPseudo)
       expect(pseudoResult).toContain('hover:bg-blue-700')
-      expect(pseudoResult).not.toContain('hover:cursor-not-allowed')
+      expect(pseudoResult).toContain('hover:cursor-not-allowed')
       expect(pseudoResult).toContain('focus:ring-2')
       expect(pseudoResult).toContain('focus:ring-blue-500')
-      expect(pseudoResult).not.toContain('focus:ring-red-500')
+      expect(pseudoResult).toContain('focus:ring-red-500')
+    })
+
+    it('should include classes with dynamic expressions', () => {
+      // These are JavaScript expressions, not literals
+      const dynamic = [
+        `tc({
+          base: {
+            static: {
+              'bg-blue-500': isActive,
+              'bg-gray-500': !isActive,
+              'opacity-50': isDisabled
+            },
+            hover: {
+              'bg-blue-700': theme === 'primary',
+              'bg-red-700': theme === 'secondary'
+            }
+          }
+        })`,
+      ]
+      const result = generateClassString(dynamic)
+      expect(result).toContain('bg-blue-500')
+      expect(result).toContain('bg-gray-500')
+      expect(result).toContain('opacity-50')
+      expect(result).toContain('hover:bg-blue-700')
+      expect(result).toContain('hover:bg-red-700')
     })
 
     it('should handle README card example', () => {
@@ -295,6 +321,7 @@ describe('generate-classes-utils', () => {
       ]
       expect(generateClassString(empty)).toBe('flex')
 
+      // When all are false literals, they're still included at build time
       const allFalse = [
         `tc({
           base: {
@@ -305,7 +332,9 @@ describe('generate-classes-utils', () => {
           }
         })`,
       ]
-      expect(generateClassString(allFalse)).toBe('')
+      const allFalseResult = generateClassString(allFalse)
+      expect(allFalseResult).toContain('hidden')
+      expect(allFalseResult).toContain('invisible')
 
       const orderIndependent1 = [
         "tc({ base: { static: 'flex items-center' } })",
@@ -370,6 +399,7 @@ describe('generate-classes-utils', () => {
       const classes = generateClassString(tcCalls)
       expect(classes).toContain('px-4')
       expect(classes).toContain('hover:bg-blue-600')
+      expect(classes).toContain('hover:bg-red-500')
       expect(classes).toContain('focus:ring-2')
       expect(classes).toContain('p-6')
       expect(classes).toContain('dark:bg-gray-800')

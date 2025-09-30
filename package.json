@@ -27,7 +27,7 @@
     "prepare": "husky",
     "semantic-release": "semantic-release",
     "test": "jest",
-    "test:watch": "jest --watch",
+    "test:watch": "jest --watchAll",
     "test:coverage": "jest --coverage"
   },
   "author": "Keeghan McGarry",
@@ -50,7 +50,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "json5": "^2.2.3"
+    "acorn": "^8.15.0"
   },
   "repository": {
     "type": "git",
