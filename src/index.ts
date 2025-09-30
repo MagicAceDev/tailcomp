@@ -1,25 +1,27 @@
+type Style = string | { [key: string]: boolean }
+
 type StateStyles = {
-  static: string
-  hover?: string
-  focus?: string
-  active?: string
-  visited?: string
-  target?: string
-  first?: string
-  last?: string
-  only?: string
-  odd?: string
-  even?: string
-  empty?: string
-  disabled?: string
-  enabled?: string
-  checked?: string
-  indeterminate?: string
-  default?: string
-  required?: string
-  valid?: string
-  invalid?: string
-  autofill?: string
+  static: Style
+  hover?: Style
+  focus?: Style
+  active?: Style
+  visited?: Style
+  target?: Style
+  first?: Style
+  last?: Style
+  only?: Style
+  odd?: Style
+  even?: Style
+  empty?: Style
+  disabled?: Style
+  enabled?: Style
+  checked?: Style
+  indeterminate?: Style
+  default?: Style
+  required?: Style
+  valid?: Style
+  invalid?: Style
+  autofill?: Style
 }
 
 type ColourStyles = {
@@ -53,8 +55,18 @@ export default function tc(classes: TailcompStyles): string {
       .join(' ')
   }
 
-  const genPrefix = (type: keyof StateStyles | 'dark') =>
+  const genPrefix = (type: keyof StateStyles | keyof ColourStyles) =>
     `${type === 'static' ? '' : `${type}:`}`
+
+  const evaluate = (styles: Style): string => {
+    if (typeof styles === 'string') return styles.trim()
+
+    let string = ''
+    for (const [style, evaluater] of Object.entries(styles))
+      if (evaluater) string += ` ${style}`
+
+    return string.trim()
+  }
 
   for (const mediaType of getObjectKeys(classes)) {
     const mediaStyles = classes[mediaType]
@@ -73,17 +85,22 @@ export default function tc(classes: TailcompStyles): string {
         }
 
         for (const stateType of getObjectKeys(mediaStyles.dark)) {
-          const prefix = genPrefix(stateType)
           const styles = mediaStyles.dark[stateType]
-          classString += ` ${genString(`${mediaPrefix}dark:${prefix}`, styles)}`
+          if (!styles) continue
+
+          const prefix = genPrefix(stateType)
+          classString += ` ${genString(`${mediaPrefix}dark:${prefix}`, evaluate(styles))}`
         }
       } else {
-        const prefix = genPrefix(styleType)
         const styles = mediaStyles[styleType as keyof StateStyles]
-        classString += ` ${genString(`${mediaPrefix}${prefix}`, styles)}`
+        if (!styles) continue
+
+        const prefix = genPrefix(styleType)
+        classString += ` ${genString(`${mediaPrefix}${prefix}`, evaluate(styles))}`
       }
     }
   }
 
-  return classString.trim()
+  // Remove any multi-spaces and trailing spaces
+  return classString.trim().replace(/ +/g, ' ')
 }

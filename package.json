@@ -18,13 +18,17 @@
     "dist"
   ],
   "scripts": {
+    "dev": "nodemon --watch \"src/**/*.*\" --exec \"yarn build\"",
     "build": "yarn build:esm && yarn build:cjs && yarn build:cjs-package",
     "build:esm": "tsc",
     "build:cjs": "tsc --project tsconfig.cjs.json",
     "build:cjs-package": "echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
     "qa": "npx prettier --write .",
     "prepare": "husky",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "author": "Keeghan McGarry",
   "license": "MIT",
@@ -34,11 +38,15 @@
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/npm": "^12.0.2",
     "@semantic-release/release-notes-generator": "^14.1.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.11.20",
     "husky": "^9.1.7",
+    "jest": "^30.2.0",
     "lint-staged": "^16.2.3",
+    "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
     "semantic-release": "^24.2.9",
+    "ts-jest": "^29.4.4",
     "typescript": "^5.3.3"
   },
   "dependencies": {

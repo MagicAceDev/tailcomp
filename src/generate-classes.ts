@@ -1,7 +1,6 @@
 import * as fs from 'fs'
-import * as JSON5 from 'json5'
 import * as path from 'path'
-import tc from './index'
+import { generateClassString, getTCcalls } from './generate-classes-utils'
 
 const validFileTypes = [
   '.ts',
@@ -36,34 +35,23 @@ function getFiles(pathName: string, acc: string[] = []): string[] {
   return acc
 }
 
-function getTCcalls(file: string): string[] {
-  const fileContents = fs.readFileSync(file, 'utf-8')
-  const tcCalls = fileContents.match(/tc\(([^)]+)\)/g)
-  return tcCalls || []
+function writeClassFile(
+  classes: string,
+  outputPath: string = './src/styles/tailcomp.js'
+): void {
+  fs.writeFileSync(outputPath, `export const tailcomp = \`${classes}\``)
 }
 
 function main() {
   const allFiles: string[] = getFiles('./src', [])
   const tcCalls: string[] = allFiles.reduce(
-    (acc: string[], file: string) => acc.concat(getTCcalls(file)),
+    (acc: string[], file: string) =>
+      acc.concat(getTCcalls(fs.readFileSync(file, 'utf-8'))),
     []
   )
 
-  const allClasses = tcCalls
-    .map((call) => {
-      const obj = JSON5.parse(call.slice(3, -1))
-      return tc(obj)
-    })
-    .join(' ')
-    .split(' ')
-    .filter((c) => c)
-
-  const uniqueClasses = [...new Set(allClasses)].join(' ')
-
-  fs.writeFileSync(
-    './src/styles/tailcomp.js',
-    `export const tailcomp = \`${uniqueClasses}\``
-  )
+  const uniqueClasses = generateClassString(tcCalls)
+  writeClassFile(uniqueClasses)
 }
 
 main()
