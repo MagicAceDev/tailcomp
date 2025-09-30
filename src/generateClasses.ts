@@ -1,9 +1,9 @@
-import tc from "./index"
-import JSON5 from "json5"
-import * as fs from "fs"
-import * as path from "path"
+import * as fs from 'fs'
+import * as JSON5 from 'json5'
+import * as path from 'path'
+import tc from './index'
 
-const validFileTypes = [".ts", ".tsx", ".js", ".jsx", ".html"]
+const validFileTypes = ['.ts', '.tsx', '.js', '.jsx', '.html']
 
 function endsWithAny(str: string, suffixes: string[]): boolean {
   return suffixes.some((suffix) => str.endsWith(suffix))
@@ -25,13 +25,13 @@ function getFiles(pathName: string, acc: string[] = []): string[] {
 }
 
 function getTCcalls(file: string): string[] {
-  const fileContents = fs.readFileSync(file, "utf-8")
+  const fileContents = fs.readFileSync(file, 'utf-8')
   const tcCalls = fileContents.match(/tc\(([^)]+)\)/g)
   return tcCalls || []
 }
 
 function main() {
-  const allFiles: string[] = getFiles("./src", [])
+  const allFiles: string[] = getFiles('./src', [])
   const tcCalls: string[] = allFiles.reduce(
     (acc: string[], file: string) => acc.concat(getTCcalls(file)),
     []
@@ -42,14 +42,14 @@ function main() {
       const obj = JSON5.parse(call.slice(3, -1))
       return tc(obj)
     })
-    .join(" ")
-    .split(" ")
+    .join(' ')
+    .split(' ')
     .filter((c) => c)
 
-  const uniqueClasses = [...new Set(allClasses)].join(" ")
+  const uniqueClasses = [...new Set(allClasses)].join(' ')
 
   fs.writeFileSync(
-    "./src/styles/tailcomp.js",
+    './src/styles/tailcomp.js',
     `export const tailcomp = \`${uniqueClasses}\``
   )
 }

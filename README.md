@@ -11,7 +11,9 @@ Welcome to Tailcomp, the intuitive TypeScript library designed to make composing
 **_This_**
 
 ```javascript
-<div className="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">/* ... */</div>
+<div className='flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700'>
+  /* ... */
+</div>
 ```
 
 **_Becomes_**
@@ -61,7 +63,6 @@ By maintaining a consistent pattern of Media Query > Colour Scheme > Dynamic Sty
 ```
 
 4. This generates a file with all your Tailwind classes in the `src/styles` directory. You will need to include this file in your `tailwind.config.js` file under `content`
-
    1. `content: ["./src/**/*.tsx", "./src/styles/tailcomp.js"]`
    2. We also recommend you add this file to your .gitignore, as it will be generated on the fly
 
