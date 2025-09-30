@@ -3,7 +3,19 @@ import * as JSON5 from 'json5'
 import * as path from 'path'
 import tc from './index'
 
-const validFileTypes = ['.ts', '.tsx', '.js', '.jsx', '.html']
+const validFileTypes = [
+  '.ts',
+  '.tsx',
+  '.js',
+  '.jsx',
+  '.html',
+  '.astro',
+  '.vue',
+  '.svelte',
+  '.mjs',
+  '.cjs',
+  '.mdx',
+]
 
 function endsWithAny(str: string, suffixes: string[]): boolean {
   return suffixes.some((suffix) => str.endsWith(suffix))
