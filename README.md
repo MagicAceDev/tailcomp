@@ -58,7 +58,7 @@ By maintaining a consistent pattern of Media Query > Colour Scheme > Dynamic Sty
 
 ```
 "scripts": {
-    "prebuild": "node ./node_modules/tailcomp/dist/cjs/generateClasses.js",
+    "prebuild": "node ./node_modules/tailcomp/dist/cjs/generate-classes.js",
 }
 ```
 
