@@ -50,15 +50,15 @@ By maintaining a consistent pattern of Media Query > Colour Scheme > Dynamic Sty
 
 1. Ensure you have TailwindCSS installed in your project already
    1. Refer to the [TailwindCSS Documentation](https://tailwindcss.com/docs/installation) for installation instructions
-2. Install Tailcomp using npm
+2. Install Tailcomp
 
-`npm -i tailcomp`
+`npm -i tailcomp` or `yarn add tailcomp`
 
 3. Because Tailcomp uses a prebuild step to generate the classes, you will need to add a prebuild script to your package.json
 
 ```
 "scripts": {
-    "prebuild": "node ./node_modules/tailcomp/dist/generateClasses.js",
+    "prebuild": "node ./node_modules/tailcomp/dist/cjs/generateClasses.js",
 }
 ```
 
@@ -68,16 +68,18 @@ By maintaining a consistent pattern of Media Query > Colour Scheme > Dynamic Sty
 
 5. During development, you're going to want to watch for changes to your `src` directory and regenerate the classes file. We recommend using `nodemon` for this, which you can install using
 
-`npm install --save-dev nodemon`
+`npm install --save-dev nodemon` or `yarn add -D nodemon`
 
 6. Now, alter your `dev` script in your `package.json` to include the `prebuild` step and watch for changes to your `src` directory
    1. Note that you will need to ignore the `tailcomp.js` file, to avoid an infinite loop of generating the classes file
 
 ```
 "scripts": {
-    "dev": "nodemon --watch \"src/**/*.{js,jsx,ts,tsx}\" --ignore \"src/styles/tailcomp.js\" --exec \"npm run prebuild && next dev\"",
+    "dev": "nodemon --watch \"src/**/*.*\" --ignore \"src/styles/tailcomp.js\" --exec \"npm run prebuild && next dev\"",
 }
 ```
+
+\*Note: The above example is for NextJS. Make sure your final dev script matches your existing dev script. For example, `astro dev`
 
 7. Finally, you can import the `tc` function and start using it in your components!
    1. See the [Basic Usage](#basic-usage) section below for more information
