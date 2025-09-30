@@ -6,19 +6,15 @@ on:
       - main
 
 permissions:
-  contents: write # Required for creating releases and tags
-  packages: write # Required for publishing to GitHub Package Registry
-  issues: write # Required for semantic-release to comment on issues
-  pull-requests: write # Required for semantic-release to comment on PRs
+  contents: write
+  packages: write
+  issues: write
+  pull-requests: write
 
 jobs:
   release:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      packages: write
-      issues: write
-      pull-requests: write
+    environment: Production
 
     steps:
       - name: Checkout
@@ -30,6 +26,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: npm install
@@ -41,4 +38,4 @@ jobs:
         run: npm run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
